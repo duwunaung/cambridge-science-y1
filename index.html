@@ -1,0 +1,827 @@
+<!DOCTYPE html>
+<html lang="my">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Cambridge Primary Science Year 1 - Quick Test & Teacher Studio</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@400;500;600;700&family=Padauk:wght@400;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/styles.css">
+
+  <!-- PWA: install as an app + work offline -->
+  <link rel="manifest" href="manifest.webmanifest">
+  <meta name="theme-color" content="#0ea5e9">
+  <link rel="icon" type="image/png" sizes="32x32" href="icons/favicon-32.png">
+  <link rel="apple-touch-icon" href="icons/apple-touch-icon.png">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-title" content="Science Y1">
+  <meta name="apple-mobile-web-app-status-bar-style" content="default">
+</head>
+<body class="text-slate-800 selection:bg-amber-300 selection:text-slate-900">
+
+  <!-- TOP NAVIGATION BAR -->
+  <header class="sticky top-0 z-30 bg-white/95 backdrop-blur-md border-b-4 border-sky-200 shadow-sm">
+    <div class="max-w-7xl mx-auto px-3 sm:px-6 py-2.5 flex flex-wrap items-center justify-between gap-3">
+      <!-- Brand / Title -->
+      <div class="flex items-center gap-3 cursor-pointer" onclick="app.showMap()">
+        <div class="w-12 h-12 rounded-2xl bg-gradient-to-br from-sky-500 to-indigo-600 flex items-center justify-center text-white shadow-md border-2 border-white">
+          <svg class="w-7 h-7" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M9.75 3.104v5.714a2.25 2.25 0 01-.659 1.591L5 14.5M9.75 3.104c-.251.023-.501.05-.75.082m.75-.082a24.301 24.301 0 014.5 0m0 0v5.714c0 .597.237 1.17.659 1.591L19.8 15.3M14.25 3.104c.251.023.501.05.75.082M19.8 15.3l-1.57.393A9.065 9.065 0 0112 15a9.065 9.065 0 00-6.23-.693L5 14.5m14.8.8l1.402 5.07a1.125 1.125 0 01-1.084 1.425H3.882a1.125 1.125 0 01-1.084-1.425L4.2 15.3" />
+          </svg>
+        </div>
+        <div>
+          <div class="flex items-center gap-2">
+            <span class="text-xs font-bold uppercase tracking-wider px-2 py-0.5 rounded-full bg-amber-100 text-amber-800 border border-amber-300">Cambridge Year 1</span>
+            <span id="storageBadge" class="text-[11px] font-semibold px-2 py-0.5 rounded-full bg-emerald-100 text-emerald-700 border border-emerald-300 flex items-center gap-1">
+              <span class="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span> Backup Ready
+            </span>
+          </div>
+          <h1 class="text-lg sm:text-xl font-bold text-slate-800 leading-tight">
+            Primary Science <span class="text-sky-600">Quick Test</span>
+          </h1>
+        </div>
+      </div>
+
+      <!-- Stats & Controls -->
+      <div class="flex flex-wrap items-center gap-2 sm:gap-3">
+        <!-- Total Stars Pill -->
+        <div class="flex items-center gap-2 bg-amber-50 border-2 border-amber-300 px-3 py-1.5 rounded-2xl shadow-inner">
+          <span class="text-xl">⭐</span>
+          <div>
+            <div class="text-[10px] font-bold uppercase text-amber-700 leading-none">Total Stars</div>
+            <div class="text-sm sm:text-base font-extrabold text-slate-800 leading-tight">
+              <span id="headerTotalStars">0</span> / <span id="headerMaxStars">54</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Total Score Pill -->
+        <div class="hidden sm:flex items-center gap-2 bg-sky-50 border-2 border-sky-200 px-3 py-1.5 rounded-2xl shadow-inner">
+          <span class="text-xl">🏆</span>
+          <div>
+            <div class="text-[10px] font-bold uppercase text-sky-700 leading-none">Science Points</div>
+            <div id="headerTotalPoints" class="text-sm sm:text-base font-extrabold text-slate-800 leading-tight">0</div>
+          </div>
+        </div>
+
+        <!-- Mode Switcher -->
+        <div class="flex bg-slate-100 p-1 rounded-2xl border-2 border-slate-200">
+          <button id="navMapBtn" onclick="app.showMap()" class="px-3 py-1.5 rounded-xl text-xs sm:text-sm font-bold transition flex items-center gap-1.5 bg-white text-sky-700 shadow-sm">
+            <span>🗺️</span> <span class="mm-text">Levels (စာမေးပွဲ)</span>
+          </button>
+          <button id="navHtmlStudioBtn" onclick="app.showTeacherStudio('html')" class="px-3 py-1.5 rounded-xl text-xs sm:text-sm font-bold transition flex items-center gap-1.5 text-slate-600 hover:text-slate-900">
+            <span>⚡</span> <span class="mm-text">HTML / Cloud ထည့်မည်</span>
+          </button>
+          <button id="navTeacherBtn" onclick="app.showTeacherStudio('manual')" class="px-3 py-1.5 rounded-xl text-xs sm:text-sm font-bold transition flex items-center gap-1.5 text-slate-600 hover:text-slate-900">
+            <span>👩‍🏫</span> <span class="mm-text">မေးခွန်းဘဏ်</span>
+          </button>
+        </div>
+
+        <!-- Backup Storage Button -->
+        <button onclick="app.openBackupModal()" class="btn-3d bg-emerald-500 hover:bg-emerald-600 text-white px-3 py-2 rounded-xl text-xs sm:text-sm font-bold flex items-center gap-1.5" title="Backup & Restore Storage">
+          <span>💾</span> <span class="hidden md:inline mm-text">Backup သိမ်းမည်</span>
+        </button>
+
+        <!-- Install App (PWA) - shown only when the browser allows installing -->
+        <button id="installAppBtn" onclick="installPwa()" class="hidden btn-3d bg-indigo-500 hover:bg-indigo-600 text-white px-3 py-2 rounded-xl text-xs sm:text-sm font-bold flex items-center gap-1.5" title="Install as an app">
+          <span>📲</span> <span class="hidden md:inline mm-text">App ထည့်မည်</span>
+        </button>
+
+        <!-- Sound Toggle -->
+        <button id="soundToggleBtn" onclick="app.toggleSound()" class="p-2 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-700 border-2 border-slate-200 transition" title="Toggle Sound Effects">
+          🔊
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <!-- MAIN CONTAINER -->
+  <main class="max-w-7xl mx-auto px-3 sm:px-6 py-6">
+
+    <!-- ==================== VIEW 1: WORLD & LEVEL MAP ==================== -->
+    <section id="viewMap" class="space-y-6">
+      <!-- Teacher Pedagogical Banner & Quick Controls -->
+      <div class="bg-gradient-to-r from-indigo-600 via-sky-600 to-teal-500 rounded-3xl p-5 sm:p-6 text-white shadow-lg relative overflow-hidden">
+        <div class="relative z-10 flex flex-col lg:flex-row lg:items-center justify-between gap-4">
+          <div class="space-y-1.5 max-w-3xl">
+            <div class="inline-flex items-center gap-2 bg-white/20 backdrop-blur-sm px-3 py-1 rounded-full text-xs font-bold">
+              <span>🔬</span> <span>Cambridge Primary Science Workbook 1 (2nd Edition) • <span id="bannerTotalQuestionsCount">162</span> Questions</span>
+            </div>
+            <h2 class="text-xl sm:text-2xl font-extrabold mm-text">
+              အဆင့်လိုက် သိပ္ပံဉာဏ်စမ်း (Focus ➔ Practice ➔ Challenge)
+            </h2>
+            <p class="text-sky-100 text-xs sm:text-sm mm-text">
+              Unit တစ်ခုစီတွင် <strong>Focus (အခြေခံ)</strong>၊ <strong>Practice (လေ့ကျင့်ခန်း)</strong> နှင့် <strong>Challenge (စိန်ခေါ်မှု)</strong> ဟူ၍ အဆင့် (၃) ဆင့် ပါဝင်ပြီး အဆင့်တိုင်းတွင် မေးခွန်း (၉) ပုဒ်စီ (Unit တစ်ခုလျှင် ၂၇ ပုဒ်၊ စုစုပေါင်း ၁၆၂ ပုဒ်) ပါဝင်ပါသည်။
+            </p>
+          </div>
+
+          <!-- Teacher Unlock Toggle & Quiz Mode Selector -->
+          <div class="flex flex-col sm:flex-row items-stretch sm:items-center gap-2.5 bg-white/15 backdrop-blur-md p-3 rounded-2xl border border-white/25">
+            <div class="bg-black/20 px-3 py-2 rounded-xl border border-white/15">
+              <label class="block text-[10px] font-bold uppercase text-amber-200 mm-text mb-0.5">🎯 ဖြေဆိုမည့်ပုံစံ (Quiz Mode)</label>
+              <select id="quizModeSelect" onchange="app.changeQuizMode(this.value)" class="bg-transparent text-white text-xs font-extrabold focus:outline-none cursor-pointer mm-text">
+                <option value="all" class="text-slate-900">မေးခွန်းအားလုံး ဖြေမည် (All 9 Qs/Level)</option>
+                <option value="quick5" class="text-slate-900">ကျပန်း ၅ ပုဒ် အမြန်ဖြေမည် (Quick 5 Random)</option>
+                <option value="practice_free" class="text-slate-900">အမှတ်မတွက်ဘဲ လေ့ကျင့်မည် (Practice Mode)</option>
+              </select>
+            </div>
+            <div class="flex items-center gap-2.5">
+              <div class="text-xs mm-text">
+                <div class="font-bold text-amber-200">ဆရာ့ထိန်းချုပ်မှု</div>
+                <div id="lockModeStatusText" class="text-white/90 text-[11px]">ကျောင်းသားโหมด (သော့ခတ်ထားသည်)</div>
+              </div>
+              <button id="toggleUnlockAllBtn" onclick="app.toggleTeacherUnlockAll()" class="btn-3d bg-amber-400 hover:bg-amber-300 text-slate-900 px-3.5 py-2 rounded-xl text-xs font-extrabold whitespace-nowrap mm-text">
+                🔓 အားလုံးသော့ဖွင့်မည်
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- 6 Units Grid -->
+      <div id="unitsGrid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+        <!-- Dynamically rendered by JS -->
+      </div>
+    </section>
+
+    <!-- ==================== VIEW 2B: CUSTOM HTML / CLOUD APP PLAYER ==================== -->
+    <section id="viewHtmlPlayer" class="hidden max-w-6xl mx-auto space-y-4">
+      <!-- Top Control & Progression Bar -->
+      <div class="bg-white rounded-3xl p-4 sm:p-5 shadow-md border-2 border-indigo-200 flex flex-wrap items-center justify-between gap-3">
+        <div class="flex items-center gap-3">
+          <button onclick="app.showMap()" class="inline-flex items-center gap-1.5 text-xs sm:text-sm font-bold text-slate-600 hover:text-indigo-600 bg-slate-100 hover:bg-indigo-50 px-3.5 py-2 rounded-xl transition mm-text">
+            <span>⬅️</span> <span>Levels သို့ ပြန်သွားမည်</span>
+          </button>
+          <div>
+            <div class="flex items-center gap-2">
+              <span id="htmlPlayerUnitBadge" class="text-[11px] font-bold px-2.5 py-0.5 rounded-full bg-indigo-100 text-indigo-800">Unit 1</span>
+              <span id="htmlPlayerSlotBadge" class="text-[11px] font-bold px-2.5 py-0.5 rounded-full bg-amber-100 text-amber-800">Custom HTML App</span>
+            </div>
+            <h3 id="htmlPlayerTitle" class="text-base sm:text-lg font-extrabold text-slate-800 mm-text mt-0.5">
+              Interactive Science Lab
+            </h3>
+          </div>
+        </div>
+
+        <!-- Instant Star & Level Completion Controls (Works alongside postMessage) -->
+        <div class="flex flex-wrap items-center gap-2 bg-amber-50/90 border-2 border-amber-200 px-3.5 py-2 rounded-2xl">
+          <span class="text-xs font-bold text-amber-900 mm-text mr-1">🏆 ပြီးမြောက်ပါက ကြယ်ပေး၍ နောက်တစ်ဆင့်ဖွင့်ရန်:</span>
+          <button onclick="app.completeHtmlAppLevel(1, 60)" class="btn-3d bg-white hover:bg-amber-100 text-slate-800 border border-amber-300 px-2.5 py-1 rounded-xl text-xs font-extrabold">
+            ⭐ 1 Star
+          </button>
+          <button onclick="app.completeHtmlAppLevel(2, 80)" class="btn-3d bg-white hover:bg-amber-100 text-slate-800 border border-amber-300 px-2.5 py-1 rounded-xl text-xs font-extrabold">
+            ⭐⭐ 2 Stars
+          </button>
+          <button onclick="app.completeHtmlAppLevel(3, 100)" class="btn-3d bg-amber-400 hover:bg-amber-300 text-slate-900 px-3 py-1 rounded-xl text-xs font-extrabold mm-text">
+            ⭐⭐⭐ အမှတ်ပြည့် (Unlock Next)
+          </button>
+          <button onclick="app.reloadHtmlPlayerIframe()" class="p-1.5 rounded-xl bg-slate-200 hover:bg-slate-300 text-slate-700 text-xs font-bold" title="Restart HTML App">
+            🔄
+          </button>
+        </div>
+      </div>
+
+      <!-- Sandboxed Single-File HTML/CSS/JS Container -->
+      <div class="bg-white rounded-3xl shadow-2xl border-4 border-indigo-100 overflow-hidden relative" style="height: 74vh; min-height: 520px;">
+        <iframe id="customHtmlIframe" class="w-full h-full border-0" sandbox="allow-scripts allow-same-origin allow-forms allow-modals allow-popups"></iframe>
+      </div>
+    </section>
+
+    <!-- ==================== VIEW 2: INTERACTIVE QUIZ PLAYER ==================== -->
+    <section id="viewQuiz" class="hidden max-w-4xl mx-auto">
+      <div class="bg-white rounded-3xl p-4 sm:p-6 shadow-xl border-4 border-sky-200 space-y-5">
+        <!-- Quiz Top Bar -->
+        <div class="flex flex-wrap items-center justify-between gap-3 border-b-2 border-slate-100 pb-4">
+          <div class="flex items-center gap-2.5">
+            <button onclick="app.showMap()" class="px-3 py-2 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-700 font-bold text-xs sm:text-sm flex items-center gap-1.5 transition mm-text">
+              <span>⬅️</span> <span>Levels သို့</span>
+            </button>
+            <div class="flex flex-wrap items-center gap-1.5">
+              <span id="quizUnitBadge" class="text-xs font-extrabold px-3 py-1 rounded-full bg-sky-100 text-sky-800">Unit 1</span>
+              <span id="quizLevelBadge" class="text-xs font-extrabold px-3 py-1 rounded-full bg-amber-100 text-amber-800 mm-text">Level 1: Focus</span>
+            </div>
+          </div>
+
+          <div class="flex items-center gap-3">
+            <button type="button" onclick="app.speakCurrentQuestion()" class="btn-3d bg-amber-400 hover:bg-amber-300 text-slate-900 px-3 py-1.5 rounded-xl text-xs font-extrabold flex items-center gap-1">
+              <span>🔊</span> <span>Listen</span>
+            </button>
+            <div class="bg-emerald-50 border-2 border-emerald-200 px-3 py-1 rounded-xl text-xs font-extrabold text-emerald-800">
+              🏆 Score: <span id="quizLiveScore">0</span>
+            </div>
+            <div class="bg-slate-100 px-3 py-1 rounded-xl text-xs font-extrabold text-slate-700">
+              Q: <span id="quizCurrentIndex">1</span> / <span id="quizTotalCount">9</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Progress Bar -->
+        <div class="w-full h-3 bg-slate-100 rounded-full overflow-hidden p-0.5 border border-slate-200">
+          <div id="quizProgressBar" class="h-full bg-gradient-to-r from-sky-400 to-emerald-500 rounded-full transition-all duration-300" style="width: 15%"></div>
+        </div>
+
+        <!-- Main Question Grid (Visual + Question & Options) -->
+        <div class="grid grid-cols-1 md:grid-cols-12 gap-5 items-center pt-1">
+          <!-- Left: SVG / Custom Illustration Card -->
+          <div class="md:col-span-5 bg-gradient-to-b from-sky-50 to-indigo-50/50 rounded-2xl p-4 border-2 border-sky-100 flex flex-col items-center justify-center">
+            <div id="quizIllustrationContainer" class="w-full h-48 sm:h-52 flex items-center justify-center overflow-hidden"></div>
+            <div id="quizImageCaption" class="mt-2 text-[11px] font-bold text-slate-500 text-center">Cambridge Primary Science</div>
+          </div>
+
+          <!-- Right: Question Text & 4 Options -->
+          <div class="md:col-span-7 space-y-4">
+            <div class="space-y-1.5">
+              <div id="quizTopicTag" class="text-xs font-bold uppercase tracking-wider text-sky-600">Topic</div>
+              <h3 id="quizQuestionEn" class="text-lg sm:text-xl font-extrabold text-slate-800 leading-snug">
+                Question text goes here?
+              </h3>
+              <div id="quizQuestionMm" class="text-xs sm:text-sm font-bold text-indigo-900 bg-indigo-50/80 border border-indigo-200 px-3 py-2 rounded-xl flex items-start gap-2 mm-text"></div>
+            </div>
+
+            <!-- Options Stack -->
+            <div id="quizOptionsContainer" class="grid grid-cols-1 gap-2.5"></div>
+          </div>
+        </div>
+
+        <!-- Instant Feedback Drawer -->
+        <div id="quizFeedbackBox" class="hidden mt-5 rounded-2xl p-4 border-2 bg-emerald-50 border-emerald-300">
+          <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+            <div class="flex items-start gap-3">
+              <div id="quizFeedbackIcon" class="text-2xl sm:text-3xl shrink-0">🌟</div>
+              <div class="space-y-1">
+                <div id="quizFeedbackTitle" class="font-extrabold text-sm sm:text-base text-emerald-800 mm-text">မှန်ကန်ပါသည်!</div>
+                <p id="quizFeedbackExplanation" class="text-xs sm:text-sm text-slate-700 mm-text"></p>
+              </div>
+            </div>
+            <button id="quizNextBtn" onclick="app.nextQuestion()" class="btn-3d bg-sky-600 hover:bg-sky-500 text-white px-5 py-3 rounded-2xl font-extrabold text-xs sm:text-sm whitespace-nowrap flex items-center justify-center gap-2 shrink-0 mm-text">
+              <span>နောက်တစ်ပုဒ် (Next)</span> <span>➡️</span>
+            </button>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ==================== VIEW 3: TEACHER STUDIO (QUESTION MANAGER & HTML INJECTOR) ==================== -->
+    <section id="viewTeacher" class="hidden space-y-6">
+      <!-- Studio Header & Sub-Navigation Tabs -->
+      <div class="bg-white rounded-3xl p-5 sm:p-6 shadow-md border-2 border-indigo-100 space-y-4">
+        <div class="flex flex-col md:flex-row md:items-center justify-between gap-4">
+          <div>
+            <span class="text-xs font-bold uppercase tracking-wider px-2.5 py-1 rounded-full bg-indigo-100 text-indigo-800">Teacher Studio & Cloud Importer</span>
+            <h2 class="text-xl sm:text-2xl font-extrabold text-slate-800 mt-1 mm-text">
+              HTML Code တိုက်ရိုက်ထည့်ခြင်း၊ AI အစုလိုက် Paste လုပ်ခြင်း နှင့် မေးခွန်းဘဏ်
+            </h2>
+            <p class="text-xs sm:text-sm text-slate-600 mm-text">
+              မေးခွန်းတစ်ပုဒ်ချင်း ရိုက်ထည့်စရာမလိုဘဲ Claude / Gemini မှ HTML+CSS+JS တစ်ဖိုင်လုံးကို တိုက်ရိုက် Paste ချပြီး Level အလိုက် သော့ခတ်/ကြယ်ပေးစနစ်ဖြင့် သုံးနိုင်ပါသည်။
+            </p>
+          </div>
+          <div class="flex flex-wrap items-center gap-2.5">
+            <button onclick="app.openBackupModal()" class="btn-3d bg-emerald-500 hover:bg-emerald-600 text-white px-4 py-2.5 rounded-2xl text-xs sm:text-sm font-bold flex items-center gap-2 mm-text">
+              <span>💾</span> <span>Backup သိမ်းမည် / ပြန်တင်မည်</span>
+            </button>
+            <button onclick="app.showMap()" class="btn-3d bg-slate-700 hover:bg-slate-800 text-white px-4 py-2.5 rounded-2xl text-xs sm:text-sm font-bold flex items-center gap-2 mm-text">
+              <span>🎮</span> <span>Quick Test သို့ ပြန်သွားမည်</span>
+            </button>
+          </div>
+        </div>
+
+        <!-- 3 Studio Mode Tabs -->
+        <div class="flex flex-wrap gap-2 pt-2 border-t border-slate-100">
+          <button id="tabBtnHtmlInjector" onclick="app.switchStudioTab('html')" class="px-4 py-2.5 rounded-2xl text-xs sm:text-sm font-extrabold transition flex items-center gap-2 bg-indigo-600 text-white shadow-sm mm-text">
+            <span>⚡</span> <span>၁။ HTML / Cloud Code တိုက်ရိုက် Paste မည် (HTML+CSS+JS App)</span>
+          </button>
+          <button id="tabBtnBulkPaste" onclick="app.switchStudioTab('bulk')" class="px-4 py-2.5 rounded-2xl text-xs sm:text-sm font-extrabold transition flex items-center gap-2 bg-slate-100 text-slate-700 hover:bg-slate-200 mm-text">
+            <span>📋</span> <span>၂။ AI မေးခွန်းများ အစုလိုက် Paste လုပ်မည် (Bulk Paste)</span>
+          </button>
+          <button id="tabBtnManualBank" onclick="app.switchStudioTab('manual')" class="px-4 py-2.5 rounded-2xl text-xs sm:text-sm font-extrabold transition flex items-center gap-2 bg-slate-100 text-slate-700 hover:bg-slate-200 mm-text">
+            <span>✍️</span> <span>၃။ မေးခွန်းဘဏ် နှင့် တစ်ပုဒ်ချင်းပြင်ရန် (162+ Qs)</span>
+          </button>
+        </div>
+      </div>
+
+      <!-- SUB-TAB 1: HTML / CLOUD SINGLE-FILE PASTE INJECTOR -->
+      <div id="studioTabHtml" class="grid grid-cols-1 lg:grid-cols-12 gap-6">
+        <!-- Left: HTML Code Editor & Slot Configuration -->
+        <div class="lg:col-span-7 bg-white rounded-3xl p-5 sm:p-6 shadow-md border-2 border-indigo-200 space-y-4">
+          <div class="flex flex-wrap items-center justify-between gap-2 border-b pb-3">
+            <div>
+              <h3 class="text-base sm:text-lg font-extrabold text-slate-800 mm-text flex items-center gap-2">
+                <span>⚡</span> <span>Single-File HTML / CSS / JS တိုက်ရိုက်ထည့်သွင်းရန်</span>
+              </h3>
+              <p class="text-xs text-slate-500 mm-text">Claude Artifact, ChatGPT Canvas သို့မဟုတ် Gemini မှ ရေးပေးသော HTML ကုဒ်အပြည့်အစုံကို အောက်တွင် Paste ချပါ။</p>
+            </div>
+            <!-- 1-Click Sample Mini-Games -->
+            <div class="flex flex-wrap items-center gap-1.5">
+              <button type="button" onclick="app.loadSampleHtmlTemplate('living_sort')" class="px-2.5 py-1.5 rounded-xl bg-emerald-100 hover:bg-emerald-200 text-emerald-800 text-xs font-bold mm-text">
+                🌱 နမူနာ HTML ဂိမ်း (၁) စမ်းကြည့်ရန်
+              </button>
+              <button type="button" onclick="app.loadSampleHtmlTemplate('magnet_lab')" class="px-2.5 py-1.5 rounded-xl bg-amber-100 hover:bg-amber-200 text-amber-900 text-xs font-bold mm-text">
+                🧲 နမူနာ HTML ဂိမ်း (၂) စမ်းကြည့်ရန်
+              </button>
+            </div>
+          </div>
+
+          <!-- AI Prompt Helper Banner -->
+          <div class="bg-indigo-50 border-2 border-indigo-200 rounded-2xl p-3.5 flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+            <div class="text-xs text-indigo-950 mm-text space-y-0.5">
+              <div class="font-extrabold flex items-center gap-1.5">
+                <span>🤖</span> <span>Claude / AI ဆီမှ မေးခွန်းဂိမ်း သွားယူချင်ပါသလား?</span>
+              </div>
+              <p class="text-indigo-800">
+                ဤခလုတ်ကိုနှိပ်၍ Prompt ကူးယူပြီး Claude/Gemini တွင် Paste ချလိုက်ပါ။ အမှတ်နှင့် ကြယ် (၃) လုံး အလိုအလျောက် ချိတ်ဆက်ပေးမည့် HTML ကုဒ် တန်းထွက်လာပါမည်!
+              </p>
+            </div>
+            <button type="button" onclick="app.copyAiHtmlPrompt()" class="btn-3d bg-indigo-600 hover:bg-indigo-500 text-white px-3.5 py-2 rounded-xl text-xs font-extrabold whitespace-nowrap mm-text shrink-0">
+              📋 AI Prompt ကူးယူမည်
+            </button>
+          </div>
+
+          <form onsubmit="app.saveCustomHtmlApp(event)" class="space-y-4">
+            <input type="hidden" id="htmlAppEditId" value="" />
+            <div class="grid grid-cols-1 sm:grid-cols-3 gap-3">
+              <div>
+                <label class="block text-xs font-bold text-slate-700 mb-1 mm-text">၁။ Unit ရွေးချယ်ပါ *</label>
+                <select id="htmlUnitSelect" required class="w-full rounded-xl border-2 border-slate-200 px-3 py-2 text-xs sm:text-sm font-bold focus:border-indigo-500 focus:outline-none">
+                  <option value="u1">Unit 1: Living things</option>
+                  <option value="u2">Unit 2: Sound</option>
+                  <option value="u3">Unit 3: Materials</option>
+                  <option value="u4">Unit 4: The Earth</option>
+                  <option value="u5">Unit 5: Humans</option>
+                  <option value="u6">Unit 6: Forces</option>
+                </select>
+              </div>
+              <div>
+                <label class="block text-xs font-bold text-slate-700 mb-1 mm-text">၂။ မည်သည့် Level တွင် ထားမည်နည်း *</label>
+                <select id="htmlSlotSelect" required class="w-full rounded-xl border-2 border-slate-200 px-3 py-2 text-xs sm:text-sm font-bold focus:border-indigo-500 focus:outline-none">
+                  <option value="bonus">⚡ Level 4: Bonus Interactive Lab (အဆင့်အသစ်)</option>
+                  <option value="focus">Level 1: Focus (အခြေခံအဆင့်တွင် တွဲထားမည်)</option>
+                  <option value="practice">Level 2: Practice (လေ့ကျင့်ခန်းတွင် တွဲထားမည်)</option>
+                  <option value="challenge">Level 3: Challenge (စိန်ခေါ်မှုတွင် တွဲထားမည်)</option>
+                </select>
+              </div>
+              <div>
+                <label class="block text-xs font-bold text-slate-700 mb-1 mm-text">၃။ သော့ခတ်စနစ် (Lock Rule) *</label>
+                <select id="htmlLockRuleSelect" class="w-full rounded-xl border-2 border-slate-200 px-3 py-2 text-xs sm:text-sm font-bold focus:border-indigo-500 focus:outline-none">
+                  <option value="after_practice">🔒 ရှေ့အဆင့်အောင်မှ ပွင့်မည် (Locked by Level)</option>
+                  <option value="always_open">🔓 အမြဲဖွင့်ထားမည် (ခုလည်းကြည့်လို့ရ)</option>
+                </select>
+              </div>
+            </div>
+
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+              <div>
+                <label class="block text-xs font-bold text-slate-700 mb-1 mm-text">ဂိမ်း / စာမေးပွဲ ခေါင်းစဉ် (Title) *</label>
+                <input type="text" id="htmlAppTitle" required placeholder="e.g., Living Things Interactive Sorting Game" class="w-full rounded-xl border-2 border-slate-200 px-3 py-2 text-sm font-semibold focus:border-indigo-500 focus:outline-none" />
+              </div>
+              <div class="flex items-end gap-2">
+                <label class="w-full btn-3d bg-slate-100 hover:bg-slate-200 text-slate-700 border-2 border-slate-300 py-2 px-3 rounded-xl font-bold text-xs text-center cursor-pointer block mm-text">
+                  📂 ကွန်ပျူတာမှ .html ဖိုင် တိုက်ရိုက်တင်ရန် (Upload .html)
+                  <input type="file" accept=".html,.htm,.txt" onchange="app.uploadHtmlFileToEditor(event)" class="hidden" />
+                </label>
+              </div>
+            </div>
+
+            <div>
+              <div class="flex items-center justify-between mb-1">
+                <label class="text-xs font-bold text-slate-700 mm-text">HTML + CSS + JS Code (Paste Here) *</label>
+                <button type="button" onclick="app.previewHtmlInStudio()" class="text-xs font-extrabold text-indigo-600 hover:underline mm-text">
+                  👁️ ညာဘက်တွင် ချက်ချင်းစမ်းကြည့်မည် (Live Preview)
+                </button>
+              </div>
+              <textarea id="htmlCodeTextarea" required rows="10" oninput="app.scheduleLiveHtmlPreview()" placeholder="<!DOCTYPE html>\n<html>\n<head>\n  <style>body { font-family: sans-serif; }</style>\n</head>\n<body>\n  <h1>My Custom Science Quiz</h1>\n  <script>/* JS here */</script>\n</body>\n</html>" class="w-full rounded-2xl border-2 border-slate-300 bg-slate-900 text-emerald-300 font-mono text-xs p-3.5 focus:border-indigo-500 focus:outline-none"></textarea>
+            </div>
+
+            <div class="flex flex-wrap gap-3">
+              <button type="button" onclick="app.previewHtmlInStudio()" class="btn-3d bg-amber-400 hover:bg-amber-300 text-slate-900 px-5 py-3 rounded-2xl font-extrabold text-xs sm:text-sm mm-text">
+                👁️ ခုချက်ချင်း စမ်းကြည့်မည် (Live Preview)
+              </button>
+              <button type="submit" class="flex-1 btn-3d bg-indigo-600 hover:bg-indigo-500 text-white py-3 px-6 rounded-2xl font-extrabold text-xs sm:text-sm flex items-center justify-center gap-2 mm-text">
+                <span>💾</span> <span>Level ထဲသို့ သိမ်းဆည်းမည် (Save HTML App to Level)</span>
+              </button>
+            </div>
+          </form>
+        </div>
+
+        <!-- Right: Live Sandboxed Preview & Saved HTML Apps List -->
+        <div class="lg:col-span-5 space-y-6">
+          <!-- Live Preview Box -->
+          <div class="bg-white rounded-3xl p-4 sm:p-5 shadow-md border-2 border-slate-200 flex flex-col">
+            <div class="flex items-center justify-between mb-2">
+              <h4 class="font-extrabold text-sm text-slate-800 mm-text flex items-center gap-1.5">
+                <span>🖥️</span> <span>တိုက်ရိုက် စမ်းသပ်ကြည့်ရှုရာနေရာ (Live Preview)</span>
+              </h4>
+              <span class="text-[11px] font-bold px-2 py-0.5 rounded-full bg-emerald-100 text-emerald-800">Sandboxed Iframe</span>
+            </div>
+            <div class="w-full h-[320px] rounded-2xl border-2 border-slate-200 overflow-hidden bg-slate-50">
+              <iframe id="studioLivePreviewIframe" class="w-full h-full border-0" sandbox="allow-scripts allow-same-origin allow-forms"></iframe>
+            </div>
+          </div>
+
+          <!-- Saved HTML Apps Manager -->
+          <div class="bg-white rounded-3xl p-4 sm:p-5 shadow-md border-2 border-slate-200">
+            <h4 class="font-extrabold text-sm text-slate-800 mb-1 mm-text">
+              📦 သိမ်းဆည်းထားသော HTML Apps များ (<span id="savedHtmlAppsCount">0</span>)
+            </h4>
+            <p class="text-xs text-slate-500 mb-3 mm-text">ထည့်သွင်းထားသမျှ HTML ဂိမ်းများသည် Browser နှင့် Backup ဖိုင်ထဲတွင် အမြဲရှိနေပြီး အချိန်မရွေး ပြန်ဖွင့်ကြည့်နိုင်ပါသည်။</p>
+            <div id="savedHtmlAppsList" class="space-y-2.5 max-h-[260px] overflow-y-auto pr-1">
+              <!-- Populated by JS -->
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- SUB-TAB 2: BULK AI TEXT / JSON PASTE IMPORTER -->
+      <div id="studioTabBulk" class="hidden grid grid-cols-1 lg:grid-cols-12 gap-6">
+        <div class="lg:col-span-7 bg-white rounded-3xl p-5 sm:p-6 shadow-md border-2 border-emerald-200 space-y-4">
+          <div class="flex items-center justify-between border-b pb-3">
+            <div>
+              <h3 class="text-base sm:text-lg font-extrabold text-slate-800 mm-text">
+                📋 မေးခွန်းအများကြီး တစ်ခါတည်း Paste လုပ်၍ ထည့်ရန် (Bulk Importer)
+              </h3>
+              <p class="text-xs text-slate-500 mm-text">မေးခွန်းတစ်ပုဒ်ချင်း မရိုက်ချင်ပါက အောက်ပါပုံစံဖြင့် မေးခွန်း ၁၀ ပုဒ်၊ ၂၀ ပုဒ်ကို တစ်ခါတည်း Paste ချနိုင်ပါသည်။</p>
+            </div>
+            <button type="button" onclick="app.copyAiBulkQuestionsPrompt()" class="btn-3d bg-emerald-600 hover:bg-emerald-500 text-white px-3.5 py-2 rounded-xl text-xs font-extrabold mm-text">
+              🤖 AI မေးခွန်းထုတ်ရန် Prompt ကူးမည်
+            </button>
+          </div>
+
+          <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+            <div>
+              <label class="block text-xs font-bold text-slate-700 mb-1 mm-text">ထည့်သွင်းမည့် Unit ရွေးပါ *</label>
+              <select id="bulkUnitSelect" class="w-full rounded-xl border-2 border-slate-200 px-3 py-2 text-sm font-bold">
+                <option value="u1">Unit 1: Living things</option>
+                <option value="u2">Unit 2: Sound</option>
+                <option value="u3">Unit 3: Materials</option>
+                <option value="u4">Unit 4: The Earth</option>
+                <option value="u5">Unit 5: Humans</option>
+                <option value="u6">Unit 6: Forces</option>
+              </select>
+            </div>
+            <div>
+              <label class="block text-xs font-bold text-slate-700 mb-1 mm-text">ထည့်သွင်းမည့် Level ရွေးပါ *</label>
+              <select id="bulkLevelSelect" class="w-full rounded-xl border-2 border-slate-200 px-3 py-2 text-sm font-bold">
+                <option value="focus">Level 1: Focus (အခြေခံ)</option>
+                <option value="practice">Level 2: Practice (လေ့ကျင့်ခန်း)</option>
+                <option value="challenge">Level 3: Challenge (စိန်ခေါ်မှု)</option>
+              </select>
+            </div>
+          </div>
+
+          <div>
+            <div class="flex items-center justify-between mb-1">
+              <label class="text-xs font-bold text-slate-700 mm-text">မေးခွန်းစာသား (သို့မဟုတ်) JSON Array ကို Paste ချပါ *</label>
+              <button type="button" onclick="app.fillSampleBulkText()" class="text-xs font-bold text-emerald-700 hover:underline mm-text">
+                📝 နမူနာပုံစံ ဖြည့်ကြည့်ရန်
+              </button>
+            </div>
+            <textarea id="bulkPasteTextarea" rows="10" placeholder="Q: Which part of a plant takes in water from the soil?\nMM: အပင်၏ မည်သည့်အစိတ်အပိုင်းက မြေကြီးထဲမှ ရေကို စုပ်ယူသနည်း။\n*A) Roots (အမြစ်)\nB) Flower (အပွင့်)\nC) Stem (ပင်စည်)\nD) Leaf (အရွက်)\nEXP: Roots grow underground and absorb water." class="w-full rounded-2xl border-2 border-slate-300 font-mono text-xs p-3.5 focus:border-emerald-500 focus:outline-none"></textarea>
+          </div>
+
+          <button type="button" onclick="app.importBulkPastedQuestions()" class="w-full btn-3d bg-emerald-600 hover:bg-emerald-500 text-white py-3 rounded-2xl font-extrabold text-sm mm-text">
+            ⚡ မေးခွန်းအားလုံးကို တစ်ခါတည်း ထည့်သွင်းမည် (Import All Questions Now)
+          </button>
+        </div>
+
+        <div class="lg:col-span-5 bg-white rounded-3xl p-5 sm:p-6 shadow-md border-2 border-slate-200 space-y-3 text-xs leading-relaxed">
+          <h4 class="font-extrabold text-sm text-slate-800 mm-text">💡 အလွယ်ကူဆုံး အသုံးပြုနည်း လမ်းညွှန်</h4>
+          <p class="text-slate-600 mm-text">
+            မေးခွန်းအသစ်များကို လက်ဖြင့် တစ်ပုဒ်ချင်း ရိုက်ထည့်စရာမလိုပါ။ နည်းလမ်း (၂) မျိုးဖြင့် တိုက်ရိုက် Paste ချနိုင်ပါသည် -
+          </p>
+          <div class="p-3 rounded-2xl bg-slate-50 border border-slate-200 space-y-1">
+            <div class="font-bold text-slate-800 mm-text">နည်းလမ်း ၁ - စာသားပုံစံ (Simple Text Format)</div>
+            <pre class="text-[11px] text-slate-700 whitespace-pre-wrap font-mono">Q: Which material is magnetic?
+MM: မည်သည့်ပစ္စည်းသည် သံလိုက်လိုက်သနည်း။
+*A) Steel nail (သံချောင်း)
+B) Wooden stick (သစ်သား)
+C) Plastic cup (ပလတ်စတစ်)
+EXP: Steel and iron are magnetic metals.</pre>
+            <div class="text-[11px] text-emerald-700 font-bold mm-text">(* ကြယ်ပွင့်ပါသော အဖြေကို အဖြေမှန်အဖြစ် အလိုအလျောက် မှတ်ယူပါသည်)</div>
+          </div>
+          <div class="p-3 rounded-2xl bg-slate-50 border border-slate-200 space-y-1">
+            <div class="font-bold text-slate-800 mm-text">နည်းလမ်း ၂ - Claude / Gemini JSON Array</div>
+            <p class="text-slate-600 mm-text">
+              အပေါ်ရှိ <strong>"🤖 AI မေးခွန်းထုတ်ရန် Prompt ကူးမည်"</strong> ခလုတ်ကိုနှိပ်ပြီး AI တွင် Paste ချပါက မေးခွန်း ၁၀ ပုဒ်စာ JSON ထွက်လာပါမည်။ ၎င်းကို တိုက်ရိုက် ကူးထည့်နိုင်ပါသည်။
+            </p>
+          </div>
+        </div>
+      </div>
+
+      <!-- SUB-TAB 3: MANUAL QUESTION BUILDER & QUESTION BANK EXPLORER -->
+      <div id="studioTabManual" class="hidden grid grid-cols-1 lg:grid-cols-12 gap-6">
+        <!-- Left Column: Add / Edit Question Form -->
+        <div class="lg:col-span-5 bg-white rounded-3xl p-5 sm:p-6 shadow-md border-2 border-slate-200 h-fit">
+          <div class="flex items-center justify-between border-b pb-3 mb-4">
+            <h3 id="formModalTitle" class="text-base sm:text-lg font-extrabold text-slate-800 flex items-center gap-2 mm-text">
+              <span>➕</span> <span>မေးခွန်းအသစ် ထည့်သွင်းရန်</span>
+            </h3>
+            <button id="cancelEditBtn" onclick="app.resetQuestionForm()" class="hidden text-xs font-bold text-rose-600 hover:underline mm-text">
+              အသစ်ပြန်စမည် (Cancel Edit)
+            </button>
+          </div>
+
+          <form id="questionForm" onsubmit="app.saveCustomQuestion(event)" class="space-y-4">
+            <input type="hidden" id="editQuestionId" value="" />
+
+            <!-- Unit & Level Selectors -->
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+              <div>
+                <label class="block text-xs font-bold text-slate-700 mb-1 mm-text">Unit ရွေးချယ်ပါ *</label>
+                <select id="qUnitSelect" required class="w-full rounded-xl border-2 border-slate-200 px-3 py-2 text-sm font-semibold focus:border-sky-500 focus:outline-none">
+                  <option value="u1">Unit 1: Living things (သက်ရှိများ)</option>
+                  <option value="u2">Unit 2: Sound (အသံ)</option>
+                  <option value="u3">Unit 3: Materials (ပစ္စည်းများ)</option>
+                  <option value="u4">Unit 4: The Earth (ကမ္ဘာမြေ)</option>
+                  <option value="u5">Unit 5: Humans (လူသားများ)</option>
+                  <option value="u6">Unit 6: Forces (အားများ)</option>
+                </select>
+              </div>
+              <div>
+                <label class="block text-xs font-bold text-slate-700 mb-1 mm-text">Level အဆင့် ရွေးပါ *</label>
+                <select id="qLevelSelect" required class="w-full rounded-xl border-2 border-slate-200 px-3 py-2 text-sm font-semibold focus:border-sky-500 focus:outline-none">
+                  <option value="focus">Level 1: Focus (အခြေခံ)</option>
+                  <option value="practice">Level 2: Practice (လေ့ကျင့်ခန်း)</option>
+                  <option value="challenge">Level 3: Challenge (စိန်ခေါ်မှု)</option>
+                </select>
+              </div>
+            </div>
+
+            <!-- Sub-topic -->
+            <div>
+              <label class="block text-xs font-bold text-slate-700 mb-1 mm-text">သင်ခန်းစာခေါင်းစဉ် (Topic Name)</label>
+              <input type="text" id="qTopicInput" placeholder="e.g., 1.2 Parts of a plant" class="w-full rounded-xl border-2 border-slate-200 px-3 py-2 text-sm focus:border-sky-500 focus:outline-none" />
+            </div>
+
+            <!-- Question English -->
+            <div>
+              <label class="block text-xs font-bold text-slate-700 mb-1 mm-text">မေးခွန်း (English Question) *</label>
+              <textarea id="qTextEn" required rows="2" placeholder="e.g., Which part of the plant grows underground in the soil?" class="w-full rounded-xl border-2 border-slate-200 px-3 py-2 text-sm focus:border-sky-500 focus:outline-none"></textarea>
+            </div>
+
+            <!-- Question Burmese Hint -->
+            <div>
+              <label class="block text-xs font-bold text-slate-700 mb-1 mm-text">မြန်မာဘာသာ အကူအညီ / ရှင်းလင်းချက် (Burmese Hint)</label>
+              <input type="text" id="qTextMm" placeholder="ဥပမာ - အပင်၏ မည်သည့်အစိတ်အပိုင်းသည် မြေကြီးအောက်တွင် ပေါက်သနည်း။" class="w-full rounded-xl border-2 border-slate-200 px-3 py-2 text-sm mm-text focus:border-sky-500 focus:outline-none" />
+            </div>
+
+            <!-- Visual Picture Selection (Built-in SVG or Custom Image Upload) -->
+            <div class="bg-slate-50 p-3.5 rounded-2xl border-2 border-slate-200 space-y-3">
+              <div class="flex items-center justify-between">
+                <label class="text-xs font-bold text-slate-700 mm-text">🖼️ မေးခွန်းပုံ ရွေးချယ်ရန် (Built-in သို့မဟုတ် ပုံတင်ရန်)</label>
+                <span class="text-[11px] text-sky-600 font-semibold">Preview below</span>
+              </div>
+
+              <div class="grid grid-cols-1 sm:grid-cols-2 gap-2.5">
+                <div>
+                  <span class="block text-[11px] font-semibold text-slate-500 mb-1 mm-text">၁။ သိပ္ပံပုံဘဏ်မှ ရွေးရန်:</span>
+                  <select id="qArtSelect" onchange="app.previewSelectedArt()" class="w-full rounded-xl border border-slate-300 px-2.5 py-1.5 text-xs font-semibold bg-white">
+                    <!-- Populated with 28+ SVG art keys -->
+                  </select>
+                </div>
+                <div>
+                  <span class="block text-[11px] font-semibold text-slate-500 mb-1 mm-text">၂။ ကွန်ပျူတာ/ဖုန်းမှ ပုံတင်ရန်:</span>
+                  <input type="file" id="qImageUpload" accept="image/*" onchange="app.handleImageUpload(event)" class="w-full text-xs text-slate-600 file:mr-2 file:py-1 file:px-2.5 file:rounded-lg file:border-0 file:text-xs file:font-bold file:bg-sky-100 file:text-sky-700 hover:file:bg-sky-200" />
+                </div>
+              </div>
+
+              <!-- Live Art Preview -->
+              <div class="flex items-center gap-3 bg-white p-2.5 rounded-xl border border-slate-200">
+                <div id="formArtPreview" class="w-20 h-20 rounded-lg bg-sky-50 flex items-center justify-center overflow-hidden shrink-0 border border-sky-100"></div>
+                <div class="text-xs space-y-1 flex-1">
+                  <div class="font-bold text-slate-700 mm-text">ရွေးထားသော ပုံနမူနာ</div>
+                  <input type="text" id="qCaptionInput" placeholder="ပုံအောက်စာသား (e.g., Sunflower plant)" class="w-full rounded-lg border border-slate-200 px-2 py-1 text-xs" />
+                  <button type="button" id="clearUploadedImgBtn" onclick="app.clearUploadedImage()" class="hidden text-[11px] text-rose-600 font-bold hover:underline mm-text">တင်ထားသောပုံဖျက်ပြီး မူလပုံသုံးမည်</button>
+                </div>
+              </div>
+            </div>
+
+            <!-- 4 Answer Options & Correct Radio -->
+            <div class="space-y-2">
+              <label class="block text-xs font-bold text-slate-700 mm-text">အဖြေရွေးချယ်စရာများ (အဖြေမှန်ရှေ့ရှိ စက်ဝိုင်းကို နှိပ်ပါ) *</label>
+              <div class="space-y-2">
+                <div class="flex items-center gap-2">
+                  <input type="radio" name="correctOpt" value="0" checked class="w-4 h-4 text-emerald-600 focus:ring-emerald-500 cursor-pointer" />
+                  <input type="text" id="qOpt0" required placeholder="Option A (အဖြေ ၁)" class="flex-1 rounded-xl border-2 border-slate-200 px-3 py-1.5 text-sm focus:border-sky-500 focus:outline-none" />
+                </div>
+                <div class="flex items-center gap-2">
+                  <input type="radio" name="correctOpt" value="1" class="w-4 h-4 text-emerald-600 focus:ring-emerald-500 cursor-pointer" />
+                  <input type="text" id="qOpt1" required placeholder="Option B (အဖြေ ၂)" class="flex-1 rounded-xl border-2 border-slate-200 px-3 py-1.5 text-sm focus:border-sky-500 focus:outline-none" />
+                </div>
+                <div class="flex items-center gap-2">
+                  <input type="radio" name="correctOpt" value="2" class="w-4 h-4 text-emerald-600 focus:ring-emerald-500 cursor-pointer" />
+                  <input type="text" id="qOpt2" placeholder="Option C (အဖြေ ၃ - မထည့်လည်းရသည်)" class="flex-1 rounded-xl border-2 border-slate-200 px-3 py-1.5 text-sm focus:border-sky-500 focus:outline-none" />
+                </div>
+                <div class="flex items-center gap-2">
+                  <input type="radio" name="correctOpt" value="3" class="w-4 h-4 text-emerald-600 focus:ring-emerald-500 cursor-pointer" />
+                  <input type="text" id="qOpt3" placeholder="Option D (အဖြေ ၄ - မထည့်လည်းရသည်)" class="flex-1 rounded-xl border-2 border-slate-200 px-3 py-1.5 text-sm focus:border-sky-500 focus:outline-none" />
+                </div>
+              </div>
+            </div>
+
+            <!-- Teacher Explanation -->
+            <div>
+              <label class="block text-xs font-bold text-slate-700 mb-1 mm-text">အဖြေရှင်းလင်းချက် (Teacher's Note - EN/MM)</label>
+              <textarea id="qExplanation" rows="2" placeholder="e.g., Roots grow under the ground and take in water for the plant. (အမြစ်သည် မြေကြီးအောက်တွင်ပေါက်ပြီး ရေစုပ်ယူပေးသည်။)" class="w-full rounded-xl border-2 border-slate-200 px-3 py-2 text-sm mm-text focus:border-sky-500 focus:outline-none"></textarea>
+            </div>
+
+            <button type="submit" id="saveQuestionBtn" class="w-full btn-3d bg-sky-600 hover:bg-sky-500 text-white py-3 rounded-2xl font-extrabold text-sm flex items-center justify-center gap-2 mm-text">
+              <span>💾</span> <span>မေးခွန်းဘဏ်သို့ သိမ်းဆည်းမည် (Save Question)</span>
+            </button>
+          </form>
+        </div>
+
+        <!-- Right Column: Question Bank Explorer & Filter -->
+        <div class="lg:col-span-7 bg-white rounded-3xl p-5 sm:p-6 shadow-md border-2 border-slate-200 flex flex-col">
+          <div class="flex flex-wrap items-center justify-between gap-3 border-b pb-4 mb-4">
+            <div>
+              <h3 class="text-base sm:text-lg font-extrabold text-slate-800 mm-text">
+                📚 လက်ရှိ မေးခွန်းဘဏ်စာရင်း (<span id="bankTotalCount">0</span> ပုဒ်)
+              </h3>
+              <p class="text-xs text-slate-500 mm-text">Unit နှင့် အဆင့်အလိုက် စစ်ထုတ်ကြည့်ရှုနိုင်ပြီး ပြင်ဆင်/ဖျက်သိမ်းနိုင်ပါသည်။</p>
+            </div>
+
+            <!-- Filters -->
+            <div class="flex flex-wrap items-center gap-2">
+              <select id="filterUnit" onchange="app.renderTeacherQuestionList()" class="rounded-xl border-2 border-slate-200 px-2.5 py-1.5 text-xs font-bold">
+                <option value="all">All Units (အားလုံး)</option>
+                <option value="u1">Unit 1: Living things</option>
+                <option value="u2">Unit 2: Sound</option>
+                <option value="u3">Unit 3: Materials</option>
+                <option value="u4">Unit 4: The Earth</option>
+                <option value="u5">Unit 5: Humans</option>
+                <option value="u6">Unit 6: Forces</option>
+              </select>
+              <select id="filterLevel" onchange="app.renderTeacherQuestionList()" class="rounded-xl border-2 border-slate-200 px-2.5 py-1.5 text-xs font-bold">
+                <option value="all">All Levels (အားလုံး)</option>
+                <option value="focus">Focus (အခြေခံ)</option>
+                <option value="practice">Practice (လေ့ကျင့်ခန်း)</option>
+                <option value="challenge">Challenge (စိန်ခေါ်မှု)</option>
+              </select>
+            </div>
+          </div>
+
+          <!-- Scrollable List -->
+          <div id="teacherQuestionsList" class="space-y-3 max-h-[680px] overflow-y-auto pr-1">
+            <!-- Populated by JS -->
+          </div>
+        </div>
+      </div>
+    </section>
+
+  </main>
+
+  <!-- ==================== MODAL 1: LEVEL COMPLETE SUMMARY (3 STARS) ==================== -->
+  <div id="levelResultModal" class="fixed inset-0 z-50 hidden bg-slate-900/70 backdrop-blur-sm flex items-center justify-center p-4">
+    <div class="bg-white rounded-3xl max-w-md w-full p-6 sm:p-8 text-center shadow-2xl border-4 border-amber-200 animate-pop">
+      <div id="resultBadgeTop" class="inline-block px-3 py-1 rounded-full text-xs font-bold uppercase bg-sky-100 text-sky-800 mb-2">
+        Unit 1 • Focus
+      </div>
+
+      <h3 id="resultHeading" class="text-2xl font-extrabold text-slate-800 mm-text">
+        အဆင့် ပြီးမြောက်ပါပြီ!
+      </h3>
+
+      <!-- Animated 3 Stars Row -->
+      <div id="resultStarsRow" class="flex items-center justify-center gap-3 my-5">
+        <!-- Injected dynamically -->
+      </div>
+
+      <!-- Score Box -->
+      <div class="bg-slate-50 rounded-2xl p-4 border-2 border-slate-200 mb-4 grid grid-cols-2 gap-2">
+        <div>
+          <div class="text-xs font-bold text-slate-500 mm-text">ရမှတ် (Accuracy)</div>
+          <div id="resultAccuracyText" class="text-xl font-extrabold text-sky-600">100% (4/4)</div>
+        </div>
+        <div>
+          <div class="text-xs font-bold text-slate-500 mm-text">ရရှိသော အမှတ်</div>
+          <div id="resultPointsText" class="text-xl font-extrabold text-emerald-600">+40 pts</div>
+        </div>
+      </div>
+
+      <p id="resultUnlockMessage" class="text-xs sm:text-sm text-slate-600 mb-6 mm-text"></p>
+
+      <div class="flex flex-col sm:flex-row gap-3">
+        <button onclick="app.retryCurrentQuiz()" class="flex-1 btn-3d bg-amber-400 hover:bg-amber-300 text-slate-900 py-3 rounded-2xl font-extrabold text-sm mm-text">
+          🔄 ပြန်ဖြေမည် (Retry)
+        </button>
+        <button id="resultNextLevelBtn" onclick="app.goToNextLevelFromModal()" class="flex-1 btn-3d bg-emerald-500 hover:bg-emerald-600 text-white py-3 rounded-2xl font-extrabold text-sm mm-text">
+          ရှေ့ဆက်မည် (Next) ➡️
+        </button>
+      </div>
+      <button onclick="app.closeResultModalToMap()" class="mt-4 text-xs font-bold text-slate-500 hover:text-slate-800 underline mm-text">
+        ပင်မမြေပုံသို့ ပြန်သွားမည် (Back to Map)
+      </button>
+    </div>
+  </div>
+
+  <!-- ==================== MODAL 2: BACKUP & RESTORE STORAGE CENTER ==================== -->
+  <div id="backupModal" class="fixed inset-0 z-50 hidden bg-slate-900/70 backdrop-blur-sm flex items-center justify-center p-4">
+    <div class="bg-white rounded-3xl max-w-2xl w-full p-5 sm:p-7 shadow-2xl border-4 border-emerald-200 animate-pop max-h-[90vh] overflow-y-auto">
+      <div class="flex items-center justify-between border-b pb-3 mb-4">
+        <div class="flex items-center gap-2.5">
+          <div class="w-10 h-10 rounded-2xl bg-emerald-100 text-emerald-700 flex items-center justify-center text-xl">💾</div>
+          <div>
+            <h3 class="text-lg sm:text-xl font-extrabold text-slate-800 mm-text">Backup Storage & Restore Center</h3>
+            <p class="text-xs text-slate-500 mm-text">မေးခွန်းအသစ်များနှင့် ကျောင်းသားရမှတ်များ မပျောက်ပျက်စေရန် အရန်သိမ်းဆည်းမှုစနစ်</p>
+          </div>
+        </div>
+        <button onclick="app.closeBackupModal()" class="w-8 h-8 rounded-full bg-slate-100 hover:bg-slate-200 flex items-center justify-center font-bold text-slate-600">✕</button>
+      </div>
+
+      <!-- Storage Health Status -->
+      <div class="bg-emerald-50 border-2 border-emerald-200 rounded-2xl p-3.5 mb-5 flex flex-wrap items-center justify-between gap-2 text-xs">
+        <div class="flex items-center gap-2">
+          <span class="text-lg">🛡️</span>
+          <div class="mm-text">
+            <div class="font-bold text-emerald-900">Dual Auto-Backup Active (LocalStorage + IndexedDB Mirror)</div>
+            <div id="lastSavedTimestamp" class="text-emerald-700">နောက်ဆုံး အလိုအလျောက် သိမ်းဆည်းချိန်: Just now</div>
+          </div>
+        </div>
+        <span id="customQCountBadge" class="px-2.5 py-1 rounded-full bg-white text-emerald-800 font-bold border border-emerald-300">0 Custom Added</span>
+      </div>
+
+      <!-- Section 1: File Export / Import (.JSON) -->
+      <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-6">
+        <div class="bg-sky-50 border-2 border-sky-200 rounded-2xl p-4 flex flex-col justify-between">
+          <div>
+            <div class="font-extrabold text-sm text-sky-900 mb-1 mm-text">📤 ၁။ Backup ဖိုင် ဒေါင်းလုဒ်ဆွဲရန်</div>
+            <p class="text-xs text-sky-800 mb-3 mm-text">
+              ထပ်ထည့်ထားသော မေးခွန်းများ၊ ပုံများနှင့် ကြယ်ပွင့်အမှတ်များ အားလုံးကို ကွန်ပျူတာ/ဖုန်းထဲသို့ <code>.json</code> ဖိုင်အဖြစ် သိမ်းဆည်းထားနိုင်ပါသည်။
+            </p>
+          </div>
+          <button onclick="app.exportBackupFile()" class="w-full btn-3d bg-sky-600 hover:bg-sky-500 text-white py-2.5 rounded-xl font-bold text-xs sm:text-sm mm-text">
+            ⬇️ Download Backup (.json)
+          </button>
+        </div>
+
+        <div class="bg-amber-50 border-2 border-amber-200 rounded-2xl p-4 flex flex-col justify-between">
+          <div>
+            <div class="font-extrabold text-sm text-amber-900 mb-1 mm-text">📥 ၂။ Backup ဖိုင် ပြန်တင်ရန် (Restore)</div>
+            <p class="text-xs text-amber-800 mb-3 mm-text">
+              သိမ်းထားသော <code>.json</code> Backup ဖိုင်ကို ပြန်ရွေးပြီး အခြားကွန်ပျူတာတစ်လုံးတွင် အလွယ်တကူ ပြန်လည်အသုံးပြုနိုင်ပါသည်။
+            </p>
+          </div>
+          <label class="w-full btn-3d bg-amber-500 hover:bg-amber-400 text-slate-900 py-2.5 rounded-xl font-bold text-xs sm:text-sm text-center cursor-pointer block mm-text">
+            📂 Choose Backup File (.json)
+            <input type="file" accept=".json" onchange="app.importBackupFile(event)" class="hidden" />
+          </label>
+        </div>
+      </div>
+
+      <!-- Section 2: Browser Instant Snapshots (Restore Points) -->
+      <div class="bg-slate-50 border-2 border-slate-200 rounded-2xl p-4 mb-5">
+        <div class="flex flex-wrap items-center justify-between gap-2 mb-3">
+          <div>
+            <h4 class="font-extrabold text-sm text-slate-800 mm-text">⏱️ Instant Restore Points (အမြန်မှတ်သားချက်များ)</h4>
+            <p class="text-xs text-slate-500 mm-text">Browser ထဲတွင် လက်ရှိအခြေအနေကို အမည်ပေး၍ Snapshot ပွားထားနိုင်ပါသည်။</p>
+          </div>
+          <div class="flex items-center gap-2">
+            <input type="text" id="snapshotNameInput" placeholder="e.g., Grade 1 Section A" class="rounded-xl border border-slate-300 px-3 py-1.5 text-xs bg-white" />
+            <button onclick="app.createSnapshot()" class="btn-3d bg-indigo-600 hover:bg-indigo-500 text-white px-3 py-1.5 rounded-xl text-xs font-bold mm-text">
+              + Save Point မှတ်မည်
+            </button>
+          </div>
+        </div>
+
+        <div id="snapshotsListContainer" class="space-y-2 max-h-40 overflow-y-auto">
+          <!-- Populated dynamically -->
+        </div>
+      </div>
+
+      <!-- Section 3: Reset Options -->
+      <div class="border-t pt-4 flex flex-wrap items-center justify-between gap-3">
+        <button onclick="app.resetStudentProgressOnly()" class="text-xs font-bold text-amber-700 bg-amber-100 hover:bg-amber-200 px-3.5 py-2 rounded-xl transition mm-text">
+          🔄 ကျောင်းသားအမှတ်နှင့် ကြယ်များသာ အသစ်ပြန်စမည် (မေးခွန်းအသစ်များ မပျက်ပါ)
+        </button>
+        <button onclick="app.resetFactoryDefaults()" class="text-xs font-bold text-rose-700 bg-rose-100 hover:bg-rose-200 px-3.5 py-2 rounded-xl transition mm-text">
+          ⚠️ မူလစက်ရုံထုတ်အတိုင်း အားလုံးပြန်ထားမည် (Factory Reset)
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- TOAST NOTIFICATION -->
+  <div id="toastNotice" class="fixed bottom-5 right-5 z-50 hidden bg-slate-900 text-white px-4 py-3 rounded-2xl shadow-xl border-2 border-sky-400 text-xs sm:text-sm font-bold flex items-center gap-2 mm-text">
+    <span id="toastIcon">✅</span>
+    <span id="toastMessage">Saved successfully!</span>
+  </div>
+
+  <!-- APPLICATION SCRIPTS (order matters: data -> services -> app -> main) -->
+  <script src="js/data/illustrations.js"></script>
+  <script src="js/data/units.js"></script>
+  <script src="js/data/questions.js"></script>
+  <script src="js/data/sample-html-templates.js"></script>
+  <script src="js/services/storage.js"></script>
+  <script src="js/services/sound.js"></script>
+  <script src="js/app/app.js"></script>
+  <script src="js/app/render.js"></script>
+  <script src="js/app/html-apps.js"></script>
+  <script src="js/app/bulk-import.js"></script>
+  <script src="js/app/quiz.js"></script>
+  <script src="js/app/question-editor.js"></script>
+  <script src="js/app/backup.js"></script>
+  <script src="js/app/ui-utils.js"></script>
+  <script src="js/pwa.js"></script>
+  <script src="js/main.js"></script>
+</body>
+</html>
